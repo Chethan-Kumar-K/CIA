@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A map-first location discovery application powered by OpenStreetMap.">
+    <title>OSM EasyFind | Discover Places</title>
+
+    <script>
+        // Apply the saved (or system) theme before the page paints to avoid a flash.
+        try {
+            document.documentElement.dataset.theme =
+                localStorage.getItem("easyfind.theme") ||
+                (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        } catch (e) { }
+    </script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js" defer></script>
+    <script src="nearby.js" defer></script>
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar">
+            <header class="side-head">
+                <a class="brand" href="./">◈ EasyFind</a>
+                <div class="head-right">
+                    <span class="powered">Powered by OpenStreetMap</span>
+                    <button type="button" id="themeToggle" class="theme-toggle"
+                        aria-label="Switch to dark mode">🌙</button>
+                </div>
+            </header>
+
+            <div class="side-search">
+                <form id="searchForm">
+                    <div class="search-wrapper">
+                        <label class="sr-only" for="searchInput">Search for a location</label>
+                        <input id="searchInput" type="search" placeholder="Search Bangalore, Mysore, Cubbon Park..."
+                            required maxlength="150" autocomplete="off" aria-autocomplete="list"
+                            aria-controls="suggestions" aria-expanded="false">
+                        <div id="suggestions" class="suggestions" role="listbox" aria-label="Location suggestions"
+                            hidden></div>
+                    </div>
+                    <button id="searchButton" type="submit">Search ↗</button>
+                </form>
+
+                <div class="quick-search">
+                    <button type="button" class="example" data-query="Cubbon Park, Bangalore">Cubbon Park</button>
+                    <button type="button" class="example" data-query="Mysore Palace, Mysore">Mysore Palace</button>
+                    <button type="button" class="example" data-query="Bangalore, India">Bangalore</button>
+                    <button type="button" id="nearMeButton" class="example">📍 Near me</button>
+                </div>
+
+                <label class="scope">
+                    Search area
+                    <select id="scopeSelect">
+                        <option value="near" selected>Prefer near me / this map area</option>
+                        <option value="only">Only inside this area</option>
+                        <option value="any">Anywhere in the world</option>
+                    </select>
+                </label>
+            </div>
+
+            <nav class="tabs" role="tablist" aria-label="Sidebar sections">
+                <button type="button" class="tab active" role="tab" data-tab="results">Results</button>
+                <button type="button" class="tab" role="tab" data-tab="nearby">Nearby</button>
+                <button type="button" class="tab" role="tab" data-tab="saved" id="savedTab">Saved (0)</button>
+            </nav>
+
+            <div class="panels">
+                <section id="tab-results" class="panel active" role="tabpanel">
+                    <div class="panel-head">
+                        <h2>Search results</h2>
+                        <span id="resultCount" class="count">0 places</span>
+                    </div>
+                    <p id="status" role="status" aria-live="polite">Search for a place to get started.</p>
+                    <div id="results" class="results"></div>
+                </section>
+
+                <section id="tab-nearby" class="panel" role="tabpanel">
+                    <div class="panel-head">
+                        <h2 id="nearbyTitle">Nearby essentials</h2>
+                        <label class="radius">
+                            Radius
+                            <select id="radiusSelect">
+                                <option value="500">500 m</option>
+                                <option value="1000" selected>1 km</option>
+                                <option value="2000">2 km</option>
+                            </select>
+                        </label>
+                    </div>
+                    <button type="button" id="scoreButton" class="view-button score-btn">📊 Neighbourhood score (1
+                        km)</button>
+                    <div id="scoreCard" class="score-card" hidden></div>
+                    <div class="chips" id="chips" role="group" aria-label="Choose a category"></div>
+                    <p id="nearbyStatus" role="status" aria-live="polite">
+                        Select a result (or tap "Near me"), then choose a category.
+                    </p>
+                    <div id="nearbyResults" class="results"></div>
+                </section>
+
+                <section id="tab-saved" class="panel" role="tabpanel">
+                    <div class="panel-head">
+                        <h2>Saved places</h2>
+                        <button type="button" id="exportSaved" class="ghost">Export JSON</button>
+                    </div>
+                    <p id="savedStatus"></p>
+                    <div class="compare-bar">
+                        <button type="button" id="compareButton" class="view-button" disabled>Compare selected
+                            (0/2)</button>
+                    </div>
+                    <div id="compareResult" class="compare-result" hidden></div>
+                    <div id="savedList" class="results"></div>
+                </section>
+            </div>
+
+            <footer>
+                A student project exploring simpler location discovery.
+                <a href="https://www.openstreetmap.org/copyright" target="_blank"
+                    rel="noopener noreferrer">OpenStreetMap attribution</a>
+            </footer>
+        </aside>
+
+        <main class="map-area">
+            <button type="button" id="toggleSidebar" class="toggle" aria-label="Show or hide the sidebar"
+                aria-controls="sidebar" aria-expanded="true">☰</button>
+            <div id="map" aria-label="Interactive map showing search results"></div>
+        </main>
+    </div>
+</body>
+
+</html>
