@@ -49,7 +49,7 @@ Points for a category = min(count / target, 1) x max points.
 | **JavaScript events** | `submit`, `input` (debounced autocomplete), `keydown` (arrow keys, Enter, Escape), `click` (tabs, chips, buttons, cards), `change` (radius, search area), `resize`/`load` (map size), Geolocation callbacks, and the custom events `place:selected`, `place:save` and `search:start`, which connect the search and nearby modules. |
 | **Fetch API** | Nominatim (search and autocomplete, with `viewbox`/`bounded` location bias), Overpass API (POST, nearby places and score), OSRM (routing). Requests use `AbortController` to cancel outdated calls, and failures show friendly messages. |
 | **JSON handling** | Responses are parsed with `response.json()`, tags are normalised, distances are computed with the Haversine formula, results are sorted and limited, GeoJSON routes are drawn on the map, and saved places are stored with `JSON.stringify` / `JSON.parse` in localStorage and exported as a downloadable `.json` file. |
-| **Deployment** | Static site (no server needed) deployed GitHub Pages.
+| **Deployment** | Static site (no server needed) deployed GitHub Pages. LINK: https://chethan-kumar-k.github.io/CIA/
 
 External services (all free, no API key): OpenStreetMap tiles, Nominatim, Overpass API, OSRM demo server, Leaflet (map library).
 
